@@ -1,5 +1,5 @@
 name: selective-pull
-title: The `selective-pull` Scriptlet Stage Snap
+title: The `selective-pull` Stage Snap
 summary: Pulling the tagged release revision if it isn't in stable channel
 description: |
   This stage snap features an override-pull scriptlet that will only
