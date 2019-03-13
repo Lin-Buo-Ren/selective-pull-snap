@@ -130,7 +130,7 @@ init(){
                 >&2
             checkout_mode=release
         else
-            printf -- 'selective-pull: Building development snapshot\n' >&2
+            printf -- 'selective-pull: Last tagged release is in the stable channel, building development snapshot\n' >&2
             checkout_mode=snapshot
         fi
 
