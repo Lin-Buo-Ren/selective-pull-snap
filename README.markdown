@@ -1,7 +1,7 @@
  
 
-# The `selective-pull` Scriptlet Stage Snap
-Refer [the snapcraft forum topic](_forum_topic_url_) for more info regarding this stage snap.
+# The `selective-pull` Scriptlet Stage Snap Workaround
+Refer [the snapcraft forum topic](https://forum.snapcraft.io/t/the-selective-pull-scriptlet-stage-snap-workaround/10389) for more info regarding this stage snap.
 
 ## License
 WTFPL
