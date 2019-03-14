@@ -7,8 +7,8 @@ description: |
   been promoted to the stable channel.  Refer the following snapcraft
   forum topic for a possible solution of this problem:
 
-      _forum_topic_title_
-      _forum_topic_url_
+      The selective-pull scriptlet stage snap workaround - doc - snapcraft.io
+      https://forum.snapcraft.io/t/the-selective-pull-scriptlet-stage-snap-workaround/10389
 
 license: WTFPL
 version: git
