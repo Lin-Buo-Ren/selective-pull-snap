@@ -70,6 +70,7 @@ init(){
                 printf -- \
                     'selective-pull: Error: Invalid command-line argument.\n' \
                     >&2
+                exit 1
             ;;
         esac
     done
