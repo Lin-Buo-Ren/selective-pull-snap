@@ -46,10 +46,12 @@ init(){
     # checkout_mode:
     # - snapshot: Build as-is
     # - release: Build the latest tagged release
+    # release_tag_pattern: We assume all tags contains dots or underscores release tags
     local \
         checkout_mode \
         flag_force_snapshot=false \
         flag_dry_run=false \
+        release_tag_pattern='*[._]*' \
         snap_version
 
     for commandline_argument in "${@}"; do
@@ -87,7 +89,7 @@ init(){
         checkout_mode=snapshot
     elif ! \
         git describe \
-            --match 'v*' \
+            --match "${release_tag_pattern}" \
             --tags \
             >/dev/null; then
         printf -- \
@@ -97,21 +99,32 @@ init(){
     else
         local \
             all_release_tags \
-            last_tagged_release \
+            last_release_tag \
+            last_release_version \
             last_stable_release_on_the_snap_store
+
+        if ! test -v SNAPCRAFT_PROJECT_NAME; then
+            printf -- \
+                "selective-pull: Error: This script requires SNAPCRAFT_PROJECT_NAME environment variable set to the snap's identifier.\\n" \
+                >&2
+            exit 1
+        fi
 
         all_release_tags="$(
             git tag \
                 --list \
-                'v*'
+                "${release_tag_pattern}"
         )"
 
         # We stripped out the prefix 'v' here
-        # shellcheck disable=SC2001
-        last_tagged_release="$(
-            sed 's/^v//' <<< "${all_release_tags}" \
-                | sort --version-sort \
+        last_release_tag="$(
+            sort --version-sort <<< "${all_release_tags}" \
                 | tail --lines=1
+        )"
+
+        # shellcheck disable=SC2001
+        last_release_version="$(
+            sed 's/^v//' <<< "${last_release_tag}"
         )"
 
         last_stable_release_on_the_snap_store="$(
@@ -123,10 +136,10 @@ init(){
         # If the latest tagged release from the repository has not been
         # released to the stable channel, build that tag instead of the
         # development snapshot and publish it in the edge channel
-        if [ "${last_tagged_release}" != "${last_stable_release_on_the_snap_store}" ]; then
+        if [ "${last_release_version}" != "${last_stable_release_on_the_snap_store}" ]; then
             printf -- \
                 "selective-pull: Last tagged release(%s) hasn't promoted to the stable channel(%s) on the Snap Store, building tagged release instead.\\n" \
-                "${last_tagged_release}" \
+                "${last_release_version}" \
                 "${last_stable_release_on_the_snap_store}" \
                 >&2
             checkout_mode=release
@@ -137,6 +150,7 @@ init(){
 
         unset \
             all_release_tags \
+            last_release_version \
             last_stable_release_on_the_snap_store
     fi
 
@@ -145,7 +159,7 @@ init(){
             : # do nothing
         ;;
         release)
-            git checkout v"${last_tagged_release}"
+            git checkout "${last_release_tag}"
         ;;
         *)
             printf -- 'Error: Invalid checkout_mode selected.\n' >&2
