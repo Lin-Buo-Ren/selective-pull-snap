@@ -87,6 +87,12 @@ init(){
     elif ! git describe &>/dev/null; then
         printf -- 'selective-pull: Build from source archive\n' >&2
         checkout_mode=snapshot
+    elif ! git diff --quiet \
+        || ! git diff --staged --quiet; then
+        # If tracked files are modified
+        # or staging area not empty
+        printf -- 'selective-pull: Working tree is dirty, building development snapshot with additional changes\n' >&2
+        checkout_mode=snapshot
     elif ! \
         git describe \
             --match "${release_tag_pattern}" \
