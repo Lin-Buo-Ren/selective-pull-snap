@@ -54,6 +54,10 @@ init(){
         release_tag_pattern='*[._]*' \
         snap_version
 
+    printf -- \
+        'selective-pull: WARNING: This stage snap is now superseded by the selective-checkout stage snap, check out the following URL for more info regarding its usage:\n\n    %s\n\n' \
+        https://forum.snapcraft.io/t/selective-checkout-check-out-the-tagged-release-revision-if-it-isnt-promoted-to-the-stable-channel/10617 \
+        >&2
     for commandline_argument in "${@}"; do
         case "${commandline_argument}" in
             # Force building development snapshot regardless the status of the snap
